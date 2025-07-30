@@ -8,6 +8,5 @@ namespace Sistema_de_citas.Model
         public string email { get; set; }
         public string user_name { get; set; }
         public string user_role { get; set; }
-        public List<Quotes> Quotes { get; set; }
     }
 }

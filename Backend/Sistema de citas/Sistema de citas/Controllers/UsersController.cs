@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Sistema_de_citas.DatabaseHelper;
+using Sistema_de_citas.Model;
+using System.Threading;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,22 +24,30 @@ namespace Sistema_de_citas.Controllers
 
         // GET: api/<UsersController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<List<Users>> Get()
         {
-            return new string[] { "value1", "value2" };
+            List<Users> usersList = new List<Users>();
+            usersList = await _context.Users.ToListAsync();
+            return usersList;
         }
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IQueryable<Users> Get(int id)
         {
-            return "value";
+            var userLista = from x in _context.Users where x.Id == id select x;
+            return userLista;
         }
 
         // POST api/<UsersController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] Users user)
         {
+            user.Id = 0; //Id en 0 ya que la base de datos la ingresa de manera auto incrementable
+            _context.Users.Add(user);
+            _context.SaveChanges();
+
+            return Ok();
         }
 
         // PUT api/<UsersController>/5
@@ -49,6 +60,9 @@ namespace Sistema_de_citas.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            var userLista = from x in _context.Users where x.Id == id select x;
+
+            var value = userLista.ExecuteDelete();
         }
     }
 }

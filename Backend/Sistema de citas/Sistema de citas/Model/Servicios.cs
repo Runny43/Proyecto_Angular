@@ -7,6 +7,5 @@
         public string service_description { get; set; }
         public string duration { get; set; }
         public float price { get; set; }
-        public List<Quotes> Quotes { get; set; }
     }
 }

@@ -18,16 +18,7 @@ namespace Sistema_de_citas.DatabaseHelper
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Quotes>()
-        .HasOne(q => q.Users)
-        .WithMany(u => u.Quotes)
-        .HasForeignKey(q => q.UsersId);
-
-            modelBuilder.Entity<Quotes>()
-                .HasOne(q => q.Servicios)
-                .WithMany(s => s.Quotes)
-                .HasForeignKey(q => q.ServiciosId);
+            
         }
 
 
