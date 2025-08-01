@@ -53,8 +53,8 @@ namespace Sistema_de_citas.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] Servicios servicio)
         {
-            var resultado = from x in _context.Servicios where x.Id == id select x;
-            resultado.ExecuteUpdate(servicio);
+            //var resultado = from x in _context.Servicios where x.Id == id select x;
+            //resultado.ExecuteUpdate(servicio);
 
 
         }
