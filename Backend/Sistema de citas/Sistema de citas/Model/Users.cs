@@ -6,6 +6,7 @@ namespace Sistema_de_citas.Model
     {
         public int Id { get; set; }
         public string email { get; set; }
+        public string password { get; set; }
         public string user_name { get; set; }
         public string user_role { get; set; }
     }
