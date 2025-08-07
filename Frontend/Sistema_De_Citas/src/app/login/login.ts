@@ -1,53 +1,40 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { UserService,User } from '../services/user-service';
-import { Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
-
-
+import {
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { UserService, User } from '../services/user-service';
+import { Router, RouterLink } from '@angular/router';
+ 
 @Component({
   standalone: true,
   selector: 'app-login',
-  imports: [CommonModule, FormsModule,RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, ReactiveFormsModule],
   templateUrl: './login.html',
-  styleUrl: './login.css'
+  styleUrl: './login.css',
 })
 export class Login {
-
-
-  NewUser : User = {
-    id: 0,
-    user_name: ' ',
-    email: '',
-    password: '',
-    user_role: 'Usuario'
-  };
-
-
-  constructor(private userService: UserService, private router: Router) { }
-
-  ngOnInit(): void {
-    
-    this.userService.GetUsers().subscribe((data: any) => {
-      console.log(data);
-      this.NewUser = data;
-    });
-
-  };
-
-
+  private fb = inject(FormBuilder);
+  private api = inject(UserService);
+  private router = inject(Router);
+ 
+  newUser = this.fb.group({
+    user_name: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required],
+    user_role: ['', Validators.required],
+  });
+ 
   LoginUser() {
-    this.userService.Login(this.NewUser).subscribe((data: any) => {
-      console.log(data);
-      alert('Inicio de sesión exitoso');
-      // Aquí podrías redirigir al usuario a otra página después del inicio de sesión
-      this.router.navigate(['/home']);
-    }, (error: any) => {
-      console.error(error);
-      alert('Error al iniciar sesión');
+    this.api.Login(this.newUser.value).subscribe({
+      next: (res) => {
+        alert('sign in');
+        this.router.navigate(['/']);
+      },
+      error: (err) => console.error(err),
     });
-
-
-
   }
 }

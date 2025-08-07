@@ -1,60 +1,41 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { UserService,User } from '../services/user-service';
-import { RouterLink,RouterOutlet } from '@angular/router';
-
-
+import { Component, inject } from '@angular/core';
+import {
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { UserService } from '../services/user-service';
+import { RouterLink } from '@angular/router';
+ 
 @Component({
   standalone: true,
   selector: 'app-sing-up',
-  imports: [CommonModule,FormsModule,RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, ReactiveFormsModule],
   templateUrl: './sing-up.html',
-  styleUrl: './sing-up.css'
+  styleUrl: './sing-up.css',
 })
-export class SingUp implements OnInit {
-
-
-    NewUser : User = {
-    user_name: '',
-    email: '',
-    password: '',
-    user_role: 'Usuario'
-  };
-
-  constructor(private userService: UserService) { }
-
-   ngOnInit(): void {
-    
-    this.userService.GetUsers().subscribe((data: any) => {
-      console.log(data);
-      this.NewUser = data;
-    });
-
-  }
-
+export class SingUp {
+  private fb = inject(FormBuilder);
+  private api = inject(UserService);
+ 
+  newUser = this.fb.group({
+    user_name: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required],
+    user_role: ['', Validators.required],
+  });
+ 
   SaveUser() {
-     console.log('Datos enviados al backend:', this.NewUser);
-     this.userService.SaveUser(this.NewUser).subscribe({
-      next: () => {
-        console.log('Usuario guardado correctamente',this.NewUser);
+    this.api.SaveUser(this.newUser.value).subscribe({
+      next: (res) => {
         alert('Usuario guardado correctamente');
-        this.NewUser = {
-          id: 0,
-          user_name: '',
-          email: '',
-          password: '',
-          user_role: 'Usuario'
-        }
-      
+        this.newUser.reset();
       },
       error: (error: any) => {
         console.error(error);
-        alert('Error al guardar el usuario');
-      }
+      },
     });
-
   }
-
-
 }
