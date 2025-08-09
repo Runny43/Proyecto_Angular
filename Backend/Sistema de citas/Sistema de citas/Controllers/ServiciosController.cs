@@ -51,11 +51,10 @@ namespace Sistema_de_citas.Controllers
 
         // PUT api/<ServiciosController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Servicios servicio)
+        public async void Put(int id, [FromBody] Servicios servicio)
         {
-            //var resultado = from x in _context.Servicios where x.Id == id select x;
-            //resultado.ExecuteUpdate(servicio);
-
+            Servicios servicioBuscado = new Servicios();
+            servicioBuscado= await _context.Servicios.FindAsync(id);
 
         }
 
