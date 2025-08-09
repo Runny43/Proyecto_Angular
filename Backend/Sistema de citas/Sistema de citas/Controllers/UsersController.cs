@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Sistema_de_citas.DatabaseHelper;
+using Sistema_de_citas.DTOs;
 using Sistema_de_citas.Model;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -48,25 +50,43 @@ namespace Sistema_de_citas.Controllers
 
         // POST api/<UsersController>
         [HttpPost]
-        public IActionResult Post([FromBody] Users user)
+        public async Task<ActionResult> Post(RegisterDTO dto)
         {
-             //Id en 0 ya que la base de datos la ingresa de manera auto incrementable
+
+            if (string.IsNullOrEmpty(dto.email) || string.IsNullOrEmpty(dto.password) || string.IsNullOrEmpty(dto.user_name))
+            {
+                return BadRequest(new { msg = "Todos los campos son obligatorios" });
+            }
+
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = new Users
+            {
+                email = dto.email,
+                password = dto.password, 
+                user_name = dto.user_name,
+                user_role = dto.user_role
+            };
+
             _context.Users.Add(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Ok();
         }
 
-        [HttpPost("Login")]
-        public async Task<IActionResult> Login( Users user)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginDTO dto)
         {
-            var usuario = await _context.Users.FirstOrDefaultAsync(u => u.email == user.email && u.password == user.password);
+            var usuario = await _context.Users.FirstOrDefaultAsync(u => u.email == dto.email && u.password == dto.password);
 
             if (usuario == null)
                  return Unauthorized(new{ msg = "Credenciales invalidas" });
 
-            var token = GenerarToken(user.email);
-            return Ok(new { token });
+            var token = GenerarToken(dto.email, usuario.user_role);
+            return Ok(new { token});
         }
 
 
@@ -85,15 +105,16 @@ namespace Sistema_de_citas.Controllers
             var value = userLista.ExecuteDelete();
         }
 
-        private string GenerarToken(string email)
+        private string GenerarToken(string email, string user_role)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
             new Claim(JwtRegisteredClaimNames.Sub, email),
+            new Claim("role", user_role),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 

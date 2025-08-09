@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Sistema_de_citas.DatabaseHelper;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,7 +27,7 @@ builder.Services.AddCors(opciones =>
 });
 
 builder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer("Bearer", options =>
+    .AddJwtBearer(options =>
     {
         var jwtSettings = builder.Configuration.GetSection("Jwt");
         options.TokenValidationParameters = new TokenValidationParameters
@@ -37,16 +38,12 @@ builder.Services.AddAuthentication("Bearer")
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwtSettings["Issuer"],
             ValidAudience = jwtSettings["Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!)),
+            RoleClaimType = ClaimTypes.Role
         };
     });
 
-
-builder.Services.AddAuthorization();
-
 var app = builder.Build();
-
-
 
 
 // Configure the HTTP request pipeline.
@@ -57,12 +54,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseCors();
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

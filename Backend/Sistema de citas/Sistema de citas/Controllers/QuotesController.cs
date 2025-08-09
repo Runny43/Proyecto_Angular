@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sistema_de_citas.DatabaseHelper;
 using Sistema_de_citas.Model;
@@ -9,6 +10,7 @@ namespace Sistema_de_citas.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class QuotesController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -23,6 +25,7 @@ namespace Sistema_de_citas.Controllers
 
         // GET: api/<QuotesController>
         [HttpGet]
+        //[AllowAnonymous]
         public async Task<List<Quotes>> Get()
         {
             List<Quotes> quoteList = new List<Quotes>();
