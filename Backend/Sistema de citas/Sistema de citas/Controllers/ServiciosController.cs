@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sistema_de_citas.DatabaseHelper;
 using Sistema_de_citas.Model;
@@ -9,6 +10,7 @@ namespace Sistema_de_citas.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ServiciosController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -16,9 +18,7 @@ namespace Sistema_de_citas.Controllers
         public ServiciosController(AppDbContext context)
 
         {
-
             _context = context;
-
         }
 
         // GET: api/<ServiciosController>
@@ -41,6 +41,7 @@ namespace Sistema_de_citas.Controllers
 
         // POST api/<ServiciosController>
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public IActionResult Post([FromBody] Servicios servicios)
         {
             servicios.Id= 0;

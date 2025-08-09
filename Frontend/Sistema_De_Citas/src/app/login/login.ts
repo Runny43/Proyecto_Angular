@@ -2,12 +2,20 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
+  FormControl,
+  FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { UserService, User } from '../services/user-service';
+import { UserService } from '../services/user-service';
 import { Router, RouterLink } from '@angular/router';
+
+interface TokenPayload {
+  sub: string;
+  role: string;
+  exp: number;
+}
  
 @Component({
   standalone: true,
@@ -16,23 +24,38 @@ import { Router, RouterLink } from '@angular/router';
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
+
+
 export class Login {
   private fb = inject(FormBuilder);
   private api = inject(UserService);
   private router = inject(Router);
  
-  newUser = this.fb.group({
-    user_name: ['', Validators.required],
+  newUser: FormGroup<{ email: FormControl<string | null>, password: FormControl<string | null> }> = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
-    user_role: ['', Validators.required],
   });
  
+
   LoginUser() {
     this.api.Login(this.newUser.value).subscribe({
       next: (res) => {
         alert('sign in');
-        this.router.navigate(['/']);
+      
+        localStorage.setItem('token', res.token);
+        console.log(res.token);
+        
+        const tokenPayload: TokenPayload = JSON.parse(atob(res.token.split('.')[1]));
+        console.log(tokenPayload);
+        console.log(tokenPayload.role);
+        console.log(tokenPayload.sub);
+        console.log(tokenPayload.exp);
+        
+        if(tokenPayload.role === 'usuario'){
+          this.router.navigate(['/dasboard-user']);
+        }else{
+          this.router.navigate(['/dasboard-admin']);
+        }
       },
       error: (err) => console.error(err),
     });

@@ -2,12 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
  
-export interface User {
+interface User {
   user_name: string;
   email: string;
   password: string;
   user_role: string;
 }
+
+
  
 @Injectable({
   providedIn: 'root',
@@ -23,11 +25,11 @@ export class UserService {
     return this.http.get(`${this.urlApi}/${id}`);
   }
  
-  SaveUser(user: any) {
+  SaveUser(user: any): Observable<any> {
     return this.http.post(this.urlApi, user);
   }
  
-  Login(user: any) {
+  Login(user: any): Observable<any> {
     return this.http.post(`${this.urlApi}/Login`, user);
   }
  
