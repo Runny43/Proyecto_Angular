@@ -10,6 +10,12 @@ import {
 } from '@angular/forms';
 import { UserService } from '../services/user-service';
 import { Router, RouterLink } from '@angular/router';
+
+interface TokenPayload {
+  sub: string;
+  role: string;
+  exp: number;
+}
  
 @Component({
   standalone: true,
@@ -18,26 +24,38 @@ import { Router, RouterLink } from '@angular/router';
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
+
+
 export class Login {
   private fb = inject(FormBuilder);
   private api = inject(UserService);
   private router = inject(Router);
  
-  newUser = this.fb.group({
+  newUser: FormGroup<{ email: FormControl<string | null>, password: FormControl<string | null> }> = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
   });
  
 
   LoginUser() {
-    const { email, password } = this.newUser.value;
-    this.api.Login({
-      email: email ?? '',
-      password: password ?? ''
-    }).subscribe({
+    this.api.Login(this.newUser.value).subscribe({
       next: (res) => {
         alert('sign in');
-        this.router.navigate(['/']);
+      
+        localStorage.setItem('token', res.token);
+        console.log(res.token);
+        
+        const tokenPayload: TokenPayload = JSON.parse(atob(res.token.split('.')[1]));
+        console.log(tokenPayload);
+        console.log(tokenPayload.role);
+        console.log(tokenPayload.sub);
+        console.log(tokenPayload.exp);
+        
+        if(tokenPayload.role === 'usuario'){
+          this.router.navigate(['/dasboard-user']);
+        }else{
+          this.router.navigate(['/dasboard-admin']);
+        }
       },
       error: (err) => console.error(err),
     });

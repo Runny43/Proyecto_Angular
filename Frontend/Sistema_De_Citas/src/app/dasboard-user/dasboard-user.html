@@ -1,0 +1,176 @@
+
+  <meta charset="UTF-8">
+  <title>Dashboard Usuario</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      overflow-x: hidden;
+    }
+    .sidebar {
+      height: 100vh;
+      position: fixed;
+      width: 250px;
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-right: 1px solid #dee2e6;
+    }
+    .sidebar .user-circle {
+      width: 60px;
+      height: 60px;
+      background-color: #0d6efd;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin: 0 auto 20px;
+    }
+    .sidebar .nav-link {
+      margin-bottom: 10px;
+    }
+    .content {
+      margin-left: 270px;
+      padding: 20px;
+    }
+    .section {
+      display: none;
+    }
+    .section.active {
+      display: block;
+    }
+  </style>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="user-circle">V</div>
+    <h5 class="text-center">Victor Núñez</h5>
+    <hr>
+    <nav class="nav flex-column">
+      <a class="nav-link" href="#" onclick="showSection('proxima-cita')">Próxima Cita</a>
+      <a class="nav-link" href="#" onclick="showSection('historial')">Historial de Citas</a>
+      <a class="nav-link" href="#" onclick="showSection('agendar')">Agendar Nueva Cita</a>
+      <a class="nav-link" href="#" onclick="showSection('perfil')">Perfil del Usuario</a>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <h2 class="mb-4">Panel de Usuario</h2>
+
+    <!-- Sección: Próxima Cita -->
+    <div id="proxima-cita" class="section active">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          Próxima Cita
+        </div>
+        <div class="card-body">
+          <p><strong>Fecha:</strong> 10 de Agosto, 2025</p>
+          <p><strong>Hora:</strong> 3:00 PM</p>
+          <p><strong>Profesional:</strong> Dra. Ana Ramírez</p>
+          <p><strong>Ubicación:</strong> Clínica Central</p>
+          <button class="btn btn-warning btn-sm me-2">Reprogramar</button>
+          <button class="btn btn-danger btn-sm">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección: Historial de Citas -->
+    <div id="historial" class="section">
+      <div class="card shadow">
+        <div class="card-header bg-secondary text-white">
+          Historial de Citas
+        </div>
+        <div class="card-body">
+          <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              5 Ago 2025 - Atendida
+              <span class="badge bg-success">✔️</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              25 Jul 2025 - Cancelada
+              <span class="badge bg-danger">✖️</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              10 Jul 2025 - Atendida
+              <span class="badge bg-success">✔️</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección: Agendar Nueva Cita -->
+    <div id="agendar" class="section">
+      <div class="card shadow">
+        <div class="card-header bg-success text-white">
+          Agendar Nueva Cita
+        </div>
+        <div class="card-body">
+          <form>
+            <div class="mb-3">
+              <label for="servicio" class="form-label">Servicio</label>
+              <select class="form-select" id="servicio">
+                <option>Consulta General</option>
+                <option>Odontología</option>
+                <option>Laboratorio</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="fecha" class="form-label">Fecha</label>
+              <input type="date" class="form-control" id="fecha">
+            </div>
+            <div class="mb-3">
+              <label for="hora" class="form-label">Hora</label>
+              <input type="time" class="form-control" id="hora">
+            </div>
+            <button type="submit" class="btn btn-primary">Agendar Cita</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección: Perfil del Usuario -->
+    <div id="perfil" class="section">
+      <div class="card shadow">
+        <div class="card-header bg-info text-white">
+          Perfil del Usuario
+        </div>
+        <div class="card-body">
+          <form>
+            <div class="mb-3">
+              <label for="nombre" class="form-label">Nombre</label>
+              <input type="text" class="form-control" id="nombre" value="Victor Núñez">
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Correo Electrónico</label>
+              <input type="email" class="form-control" id="email" value="victor@email.com">
+            </div>
+            <div class="mb-3">
+              <label for="telefono" class="form-label">Teléfono</label>
+              <input type="tel" class="form-control" id="telefono" value="8888-8888">
+            </div>
+            <button type="submit" class="btn btn-outline-primary">Actualizar Perfil</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- JS para navegación entre secciones -->
+  <script>
+    function showSection(sectionId) {
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(section => {
+        section.classList.remove('active');
+      });
+      document.getElementById(sectionId).classList.add('active');
+    }
+  </script>
+</body>
