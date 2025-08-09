@@ -1,1 +1,33 @@
-<p>servicios works!</p>
+<thead class="table-primary text-center">
+  <tr>
+    <th scope="col">Id</th>
+    <th scope="col">Nombre servicio</th>
+    <th scope="col">Descripcion</th>
+    <th scope="col">Fecha Limite</th>
+    <th scope="col">Estado</th>
+    <th scope="col">Acciones</th>
+  </tr>
+</thead>
+<tbody class="text-center">
+  <tr *ngFor="let servicio of serviciosLista">
+    <td>{{ servicio.Id }}</td>
+    <td>{{ servicio.service_names }}</td>
+    <td>{{ servicio.service_description }}</td>
+    <td>{{ servicio.duration }}</td>
+    <td>{{ servicio.duration}}</td>
+    <td>
+      <!-- Botón Editar -->
+      <button class="btn btn-outline-primary btn-sm me-2" >
+        <i class="bi bi-pencil-fill"></i>
+      </button>
+
+      <!-- Botón Eliminar -->
+      <button class="btn btn-outline-danger btn-sm">
+        <i class="bi bi-trash3-fill"></i>
+      </button>
+    </td>
+  </tr>
+  <tr *ngIf="serviciosLista.length === 0">
+    <td colspan="6" class="text-muted">No hay servicios registradas.</td>
+  </tr>
+</tbody>
