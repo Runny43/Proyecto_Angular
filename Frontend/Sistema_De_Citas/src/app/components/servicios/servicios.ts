@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ServiciosServices } from '../../services/serviciosServices/servicios';
 
 @Component({
+  standalone:true,
   selector: 'app-servicios',
   imports: [CommonModule],
   templateUrl: './servicios.html',
@@ -11,6 +12,7 @@ import { ServiciosServices } from '../../services/serviciosServices/servicios';
 export class Servicios implements OnInit {
   constructor(private serviciosService: ServiciosServices) {
   }
+ 
   serviciosLista: any;
   ngOnInit(): void {
     this.serviciosService.getServicios()

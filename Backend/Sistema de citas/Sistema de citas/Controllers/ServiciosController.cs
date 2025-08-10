@@ -10,7 +10,6 @@ namespace Sistema_de_citas.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class ServiciosController : ControllerBase
     {
         private readonly AppDbContext _context;

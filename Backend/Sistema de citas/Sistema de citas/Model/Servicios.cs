@@ -1,4 +1,6 @@
-﻿namespace Sistema_de_citas.Model
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Sistema_de_citas.Model
 {
     public class Servicios
     {
