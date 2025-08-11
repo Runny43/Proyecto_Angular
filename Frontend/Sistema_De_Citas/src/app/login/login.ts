@@ -10,13 +10,9 @@ import {
 } from '@angular/forms';
 import { UserService } from '../services/user-service';
 import { Router, RouterLink } from '@angular/router';
+import { Authservice, TokenPayload } from '../services/authServices/authservice';
 
-interface TokenPayload {
-  sub: string;
-  role: string;
-  exp: number;
-}
- 
+
 @Component({
   standalone: true,
   selector: 'app-login',
@@ -30,6 +26,7 @@ export class Login {
   private fb = inject(FormBuilder);
   private api = inject(UserService);
   private router = inject(Router);
+  private auth = inject(Authservice);
  
   newUser: FormGroup<{ email: FormControl<string | null>, password: FormControl<string | null> }> = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -45,13 +42,9 @@ export class Login {
         localStorage.setItem('token', res.token);
         console.log(res.token);
         
-        const tokenPayload: TokenPayload = JSON.parse(atob(res.token.split('.')[1]));
-        console.log(tokenPayload);
-        console.log(tokenPayload.role);
-        console.log(tokenPayload.sub);
-        console.log(tokenPayload.exp);
+        const tokenPayload = this.auth.getUserData();
         
-        if(tokenPayload.role === 'usuario'){
+        if(tokenPayload?.role === 'usuario'){
           this.router.navigate(['/dasboard-user']);
         }else{
           this.router.navigate(['/dasboard-admin']);
