@@ -9,12 +9,12 @@ import { Quotes } from '../../models/Quotes';
 export class QuotesServices {
   constructor(private http:HttpClient) {}
     getQuotes(){
-      return this.http.get('https://localhost:7175/api/Servicios');
+      return this.http.get('https://localhost:7175/api/Quotes');
     }
-    deleteQuotes(Id:any){
-      return this.http.delete('https://localhost:7145/api/Servicios/'+Id)
+    deleteQuotes(Id:number){
+      return this.http.delete('https://localhost:7175/api/Quotes/'+Id)
     }
     postQuotes(quote: Quotes): Observable<Quotes>{
-      return this.http.post<Quotes>('https://localhost:7145/api/Servicios', quote)
+      return this.http.post<Quotes>('https://localhost:7175/api/Quotes', quote)
     }
 }

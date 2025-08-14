@@ -1,10 +1,11 @@
-<div class="sidebar">
-  <div class="user-circle">V</div>
-  <h5 class="text-center">Victor Núñez</h5>
+<div class="sidebar" *ngFor="let data of userData">
+  <div class="user-circle">:D</div>
+  <h5 class="text-center">{{data.user_name}}</h5>
   <hr>
   <nav class="nav flex-column">
-    <a class="nav-link"  (click)="setActiveSection('proxima-cita')">Servicios</a>
-    <a class="nav-link"  (click)="setActiveSection('historial')">Citas Pendientes</a>
+    <a class="nav-link"  (click)="setActiveSection('citas')">Citas</a>
+    <a class="nav-link"  (click)="setActiveSection('crear-cita-admin')">Crear cita</a>
+    <a class="nav-link"  (click)="setActiveSection('observar_servicios')">Servicios Disponibles</a>
     <a class="nav-link"  (click)="setActiveSection('agendar')">Crear un Servicio</a>
     <a class="nav-link"  (click)="setActiveSection('perfil')">Perfil del Usuario</a>
     <a class="nav-link"  (click)="logout($event)">Log out</a>
@@ -15,45 +16,78 @@
   <h2 class="mb-4">Panel de Administrador</h2>
 
   <!-- Próxima Cita -->
-  @if(activeSection === 'proxima-cita') {
-  <div>
+  @if(activeSection === 'citas') {
+  <div class="card shadow">
+  <div class="card-header bg-primary text-white">
+    Citas
+  </div>
+  <div class="card-body" *ngFor="let data of quoteData">
+  <p><strong>Fecha:</strong> {{ data.quote_date }}</p>
+  <p><strong>Titulo:</strong> {{ data.title }}</p>
+  <p><strong>Descripcion:</strong> {{ data.quote_description }}</p>
+  <p><strong>Id del usuario:</strong> {{ data.usersId }}</p>
+  <p><strong>Estado:</strong> {{ data.quote_state }}</p>
+  <button 
+    class="btn btn-danger btn-sm" (click)="borrarQuote(data.id)"> Cancelar
+  </button>
+  </div>
+</div>
+  }
+  <!-- Agendar -->
+   @if(activeSection === 'crear-cita-admin') {
+  <div >
     <div class="card shadow">
-      <div class="card-header bg-primary text-white">
-        Servicios
+      <div class="card-header bg-success text-white">
+        Crear una cita
       </div>
       <div class="card-body">
-        <p><strong>Fecha:</strong> 10 de Agosto, 2025</p>
-        <p><strong>Hora:</strong> 3:00 PM</p>
-        <p><strong>Profesional:</strong> Dra. Ana Ramírez</p>
-        <p><strong>Ubicación:</strong> Clínica Central</p>
-        <button class="btn btn-warning btn-sm me-2">Reprogramar</button>
-        <button class="btn btn-danger btn-sm">Cancelar</button>
+        <form (ngSubmit)="crearCita()" #tareaForm="ngForm">
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Titulo:</label>
+            <input type="text" class="form-control" id="nombre" name="title" [(ngModel)]="quotes.title">
+          </div>
+          <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripcion:</label>
+            <input type="text" class="form-control" id="descripcion" name="quote_description" [(ngModel)]="quotes.quote_description">
+          </div>
+          <div class="mb-3">
+            <label for="fecha" class="form-label">Fecha:</label>
+            <input type="date" class="form-control" id="fecha" name="quote_date" [(ngModel)]="quotes.quote_date">
+          </div>
+          <div class="mb-3">
+            <label for="estado" class="form-label">Estado:</label>
+            <select class="form-control" id="estado" name="estado" [(ngModel)]="quotes.quote_state">
+              <option value="Pendiente">Pendiente</option>
+              <option value="Confirmada">Confirmada</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="idService" class="form-label">Id del servicio:</label>
+            <input type="number" class="form-control" id="idService" name="idService" [(ngModel)]="quotes.serviciosId">
+          </div>
+          <button type="submit" class="btn btn-primary">Agendar cita</button>
+        </form>
       </div>
     </div>
   </div>
   }
   <!-- Historial -->
-  @if(activeSection === 'historial') {
+  @if(activeSection === 'observar_servicios') {
   <div >
     <div class="card shadow">
-      <div class="card-header bg-secondary text-white">
-        Citas Pendientes
+      <div class="card-header bg-secondary text-white" >
+        Servicios
       </div>
-      <div class="card-body">
+      <div class="card-body" *ngFor="let data of serviciosData">
         <ul class="list-group">
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            5 Ago 2025 - Atendida
-            <span class="badge bg-success">✔️</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            25 Jul 2025 - Cancelada
-            <span class="badge bg-danger">✖️</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            10 Jul 2025 - Atendida
-            <span class="badge bg-success">✔️</span>
+            Nombre:{{data.service_names}}<br>
+            Descripcion: {{data.service_description}}<br>
+            Duracion: {{data.duration}}<br>
+            Precio: {{data.price}}<br>
           </li>
         </ul>
+        <button class="btn btn-danger btn-sm" (click)="borrarServicio(data.id)">Eliminar</button>
       </div>
     </div>
   </div>
@@ -66,24 +100,24 @@
         Crear un Servicio
       </div>
       <div class="card-body">
-        <form>
+        <form (ngSubmit)="crearServicio()" #tareaForm="ngForm">
           <div class="mb-3">
-            <label for="servicio" class="form-label">Servicio</label>
-            <select class="form-select" id="servicio">
-              <option>Consulta General</option>
-              <option>Odontología</option>
-              <option>Laboratorio</option>
-            </select>
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombre" name="service_names" [(ngModel)]="servicios.service_names">
           </div>
           <div class="mb-3">
-            <label for="fecha" class="form-label">Fecha</label>
-            <input type="date" class="form-control" id="fecha">
+            <label for="descripcion" class="form-label">Descripcion</label>
+            <input type="text" class="form-control" id="descripcion" name="service_description" [(ngModel)]="servicios.service_description">
           </div>
           <div class="mb-3">
-            <label for="hora" class="form-label">Hora</label>
-            <input type="time" class="form-control" id="hora">
+            <label for="hora" class="form-label">Duracion</label>
+            <input type="text" class="form-control" id="hora" name="duration" [(ngModel)]="servicios.duration">
           </div>
-          <button type="submit" class="btn btn-primary">Agendar Cita</button>
+          <div class="mb-3">
+            <label for="hora" class="form-label">Precio</label>
+            <input type="number" class="form-control" id="precio" name="price" [(ngModel)]="servicios.price">
+          </div>
+          <button type="submit" class="btn btn-primary">Agendar servicio</button>
         </form>
       </div>
     </div>
@@ -96,22 +130,30 @@
       <div class="card-header bg-info text-white">
         Perfil del Usuario
       </div>
-      <div class="card-body">
-        <form>
+      <div class="card-body" *ngFor="let data of userData">
+        <form (ngSubmit)="editUser()" #tareaForm="ngForm">
           <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre</label>
-            <input type="text" class="form-control" id="nombre" value="Victor Núñez">
+            <label for="nombre" class="form-label">Id: {{data.Id}}</label>
+            <input type="number" class="form-control" id="id" value={{data.id}} [(ngModel)]="loggedUser.id" readonly>
           </div>
           <div class="mb-3">
-            <label for="email" class="form-label">Correo Electrónico</label>
-            <input type="email" class="form-control" id="email" value="victor@email.com">
+            <label for="nombre" class="form-label">Nombre: {{data.user_name}}</label>
+            <input type="text" class="form-control" id="nombre" value={{data.user_name}} [(ngModel)]="loggedUser.user_name">
           </div>
           <div class="mb-3">
-            <label for="telefono" class="form-label">Teléfono</label>
-            <input type="tel" class="form-control" id="telefono" value="8888-8888">
+            <label for="email" class="form-label">Correo Electrónico: {{data.email}}</label>
+            <input type="email" class="form-control" id="email" value="{{data.email}}" [(ngModel)]="loggedUser.email">
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Contraseña:</label>
+            <input type="password" class="form-control" id="password" [value]="data.password" [(ngModel)]="loggedUser.password" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Rol del usuario:</label>
+            <input type="text" class="form-control" id="role" [value]="data.user_role" [(ngModel)]="data.user_role" readonly>
           </div>
           <button type="submit" class="btn btn-outline-primary">Actualizar Perfil</button>
-        </form>
+          </form>
       </div>
     </div>
   </div>

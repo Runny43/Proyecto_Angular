@@ -13,9 +13,9 @@ export class ServiciosServices {
     return this.http.get('https://localhost:7175/api/Servicios');
   }
   deleteServicios(Id:any){
-    return this.http.delete('https://localhost:7145/api/Servicios/'+Id)
+    return this.http.delete('https://localhost:7175/api/Servicios/'+Id)
   }
   postServicios(servicio: Servicios): Observable<Servicios>{
-    return this.http.post<Servicios>('https://localhost:7145/api/Servicios', servicio)
+    return this.http.post<Servicios>('https://localhost:7175/api/Servicios', servicio)
   }
 }

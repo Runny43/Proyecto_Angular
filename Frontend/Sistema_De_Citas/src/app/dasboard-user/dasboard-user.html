@@ -1,13 +1,13 @@
-<div class="sidebar">
-  <div class="user-circle">{{ user?.sub?.charAt(0) }}</div>
-  <h5 class="text-center">{{user?.sub}}</h5>
+<div class="sidebar" *ngFor="let data of userData">
+  <div class="user-circle">:D</div>
+  <h5 class="text-center">{{data.user_name}}</h5>
   <hr>
   <nav class="nav flex-column">
-    <a class="nav-link"  (click)="setActiveSection('proxima-cita')">Próxima Cita</a>
-    <a class="nav-link"  (click)="setActiveSection('historial')">Historial de Citas</a>
-    <a class="nav-link"  (click)="setActiveSection('agendar')">Agendar Nueva Cita</a>
-    <a class="nav-link"  (click)="setActiveSection('perfil')">Perfil del Usuario</a>
-    <a class="nav-link"  (click)="logout($event)">Log out</a>
+    <a class="nav-link" (click)="setActiveSection('proxima-cita')">Próxima Cita</a>
+    <a class="nav-link" (click)="setActiveSection('historial')">Historial de Citas</a>
+    <a class="nav-link" (click)="setActiveSection('agendar')">Agendar Nueva Cita</a>
+    <a class="nav-link" (click)="setActiveSection('perfil')">Perfil del Usuario</a>
+    <a class="nav-link text-danger" (click)="logout($event)">Log out</a>
   </nav>
 </div>
 
@@ -15,106 +15,40 @@
   <h2 class="mb-4">Panel de Usuario</h2>
 
   <!-- Próxima Cita -->
-  @if(activeSection === 'proxima-cita') {
-  <div>
-    <div class="card shadow">
-      <div class="card-header bg-primary text-white">
-        Próxima Cita
-      </div>
+  <div *ngIf="activeSection === 'proxima-cita'">
+    <div class="card shadow" *ngFor="let cita of servicios">
+      <div class="card-header bg-primary text-white">{{ cita.nombre }}</div>
       <div class="card-body">
-        <p><strong>Fecha:</strong> 10 de Agosto, 2025</p>
-        <p><strong>Hora:</strong> 3:00 PM</p>
-        <p><strong>Profesional:</strong> Dra. Ana Ramírez</p>
-        <p><strong>Ubicación:</strong> Clínica Central</p>
-        <button class="btn btn-warning btn-sm me-2">Reprogramar</button>
-        <button class="btn btn-danger btn-sm">Cancelar</button>
+        <p>{{ cita.descripcion }}</p>
+        <button class="btn btn-warning btn-sm me-2" (click)="reprogramarCita(cita)">Reprogramar</button>
+        <button class="btn btn-danger btn-sm" (click)="cancelarCita(cita.id!)">Cancelar</button>
       </div>
     </div>
   </div>
-  }
-  <!-- Historial -->
-  @if(activeSection === 'historial') {
-  <div >
-    <div class="card shadow">
-      <div class="card-header bg-secondary text-white">
-        Historial de Citas
-      </div>
-      <div class="card-body">
-        <ul class="list-group">
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            5 Ago 2025 - Atendida
-            <span class="badge bg-success">✔️</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            25 Jul 2025 - Cancelada
-            <span class="badge bg-danger">✖️</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            10 Jul 2025 - Atendida
-            <span class="badge bg-success">✔️</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  }
+
   <!-- Agendar -->
-   @if(activeSection === 'agendar') {
-  <div >
+  <div *ngIf="activeSection === 'agendar'">
     <div class="card shadow">
-      <div class="card-header bg-success text-white">
-        Agendar Nueva Cita
-      </div>
+      <div class="card-header bg-success text-white">Agendar Nueva Cita</div>
       <div class="card-body">
-        <form>
+        <form (ngSubmit)="agendarCita(fecha.value, hora.value)">
           <div class="mb-3">
             <label for="servicio" class="form-label">Servicio</label>
-            <select class="form-select" id="servicio">
-              <option>Consulta General</option>
-              <option>Odontología</option>
-              <option>Laboratorio</option>
+            <select class="form-select" id="servicio" [(ngModel)]="selectedServicio" name="servicio">
+              <option *ngFor="let s of servicios" [ngValue]="s">{{ s.nombre }}</option>
             </select>
           </div>
           <div class="mb-3">
             <label for="fecha" class="form-label">Fecha</label>
-            <input type="date" class="form-control" id="fecha">
+            <input type="date" class="form-control" id="fecha" #fecha>
           </div>
           <div class="mb-3">
             <label for="hora" class="form-label">Hora</label>
-            <input type="time" class="form-control" id="hora">
+            <input type="time" class="form-control" id="hora" #hora>
           </div>
           <button type="submit" class="btn btn-primary">Agendar Cita</button>
         </form>
       </div>
     </div>
   </div>
-  }
-  <!-- Perfil -->
-  @if(activeSection === 'perfil') {
-  <div >
-    <div class="card shadow">
-      <div class="card-header bg-info text-white">
-        Perfil del Usuario
-      </div>
-      <div class="card-body">
-        <form>
-          <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre</label>
-            <input type="text" class="form-control" id="nombre" value="Victor Núñez">
-          </div>
-          <div class="mb-3">
-            <label for="email" class="form-label">Correo Electrónico</label>
-            <input type="email" class="form-control" id="email" value="victor@email.com">
-          </div>
-          <div class="mb-3">
-            <label for="telefono" class="form-label">Teléfono</label>
-            <input type="tel" class="form-control" id="telefono" value="8888-8888">
-          </div>
-          <button type="submit" class="btn btn-outline-primary">Actualizar Perfil</button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  }
-  <!-- Fin del contenido -->
+</div>

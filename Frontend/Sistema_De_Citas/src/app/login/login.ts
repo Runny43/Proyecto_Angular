@@ -23,17 +23,18 @@ import { Authservice, TokenPayload } from '../services/authServices/authservice'
 
 
 export class Login {
+  
   private fb = inject(FormBuilder);
   private api = inject(UserService);
   private router = inject(Router);
   private auth = inject(Authservice);
- 
+ private userDataService = inject(UserService);
+
   newUser: FormGroup<{ email: FormControl<string | null>, password: FormControl<string | null> }> = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
   });
- 
-
+  
   LoginUser() {
     this.api.Login(this.newUser.value).subscribe({
       next: (res) => {
@@ -43,6 +44,8 @@ export class Login {
         console.log(res.token);
         
         const tokenPayload = this.auth.getUserData();
+        const emailValue = this.newUser.get('email')?.value || '';
+        this.userDataService.setEmail(emailValue);
         
         if(tokenPayload?.role === 'usuario'){
           this.router.navigate(['/dasboard-user']);
@@ -50,6 +53,7 @@ export class Login {
           this.router.navigate(['/dasboard-admin']);
         }
       },
+      
       error: (err) => console.error(err),
     });
   }
