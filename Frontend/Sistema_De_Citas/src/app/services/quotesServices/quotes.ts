@@ -16,5 +16,7 @@ export class QuotesServices {
     }
     postQuotes(quote: Quotes): Observable<Quotes>{
       return this.http.post<Quotes>('https://localhost:7145/api/Servicios', quote)
+
+      
     }
 }
