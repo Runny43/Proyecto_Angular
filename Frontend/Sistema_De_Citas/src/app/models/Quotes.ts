@@ -2,7 +2,7 @@ export class Quotes {
     id!: number;
     title!: string;
     quote_description!: string;
-    quote_date!: Date;
+    quote_date!: string;
     quote_state!: string;
     usersId!: number;
     serviciosId!: number;
@@ -11,7 +11,7 @@ export class Quotes {
         id: number,
         title: string,
         quote_description: string,
-        quote_date: Date,
+        quote_date: string,
         quote_state: string,
         usersId: number,
         serviciosId: number

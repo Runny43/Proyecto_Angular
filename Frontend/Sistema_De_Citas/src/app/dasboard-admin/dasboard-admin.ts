@@ -46,6 +46,7 @@ export class DasboardAdmin {
     userData:any;
     quoteData:any;
     serviciosData:any;
+    userId:number=0;
     
   ngOnInit() {
   const tokenData = this.authService.getUserData();
@@ -57,6 +58,7 @@ export class DasboardAdmin {
         (data: any) => {
           console.log(data)
           this.userData = data;
+          this.userId = data.id;
         }
       );
 
@@ -108,16 +110,16 @@ export class DasboardAdmin {
   );
   }
 
-  quotes: Quotes= new Quotes(0, '', '', new Date(), '', 0, 0);
+  quotes: Quotes= new Quotes(0, '', '', '', '', 0, 0);
   crearCita() {
-    this.quotes.usersId = this.userData.id;
-    this.quotesService.postQuotes(this.quotes)
-    .subscribe({
-      next:(res) => console.log('Cita creada:', res),
-      error: (err) => console.error('Error al crear servicio:', err)
-    }
-  );
-  }
+  this.quotes.usersId = this.userId;
+  this.quotes.quote_date = new Date(this.quotes.quote_date).toISOString();
+
+  this.quotesService.postQuotes(this.quotes).subscribe({
+    next: (res) => console.log('Cita creada:', res),
+    error: (err) => console.error('Error al crear cita:', err)
+  });
+}
 
 
 }
