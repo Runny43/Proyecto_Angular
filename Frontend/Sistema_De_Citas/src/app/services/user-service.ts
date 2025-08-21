@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
- 
-interface User {
+import { Users } from '../models/Users';
+
+ export interface User {
   user_name: string;
   email: string;
   password: string;
@@ -21,10 +22,13 @@ export class UserService {
   GetUsers() {
     return this.http.get(this.urlApi);
   }
-  GetUser(id: number) {
-    return this.http.get(`${this.urlApi}/${id}`);
+  GetUser(email: string) {
+    const encodedEmail = encodeURIComponent(email);
+    return this.http.get(`${this.urlApi}/${encodedEmail}`);
   }
- 
+  putUser(loggedUser: Users): Observable<Users>{
+    return this.http.put<Users>( `https://localhost:7175/api/Users/${loggedUser.id}`,loggedUser)
+  }
   SaveUser(user: any): Observable<any> {
     return this.http.post(this.urlApi, user);
   }
@@ -36,4 +40,21 @@ export class UserService {
   DeleteUser(id: number) {
     return this.http.delete(`${this.urlApi}/${id}`);
   }
+
+  private email: string = '';
+
+  setEmail(email: string) {
+    this.email = email;
+  }
+
+  getEmail(): string {
+    return this.email;
+  }
+
+  updateUser(id: any, user : any ) {
+    return this.http.put(`${this.urlApi}/UpdateUser/${id}`, user)
+  }
+
+  
+
 }

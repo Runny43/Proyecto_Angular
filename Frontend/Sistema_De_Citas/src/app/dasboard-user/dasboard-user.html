@@ -1,112 +1,212 @@
 <div class="sidebar">
-  <div class="user-circle">{{user?.sub?.charAt(0) }}</div>
-  <h5 class="text-center">{{user?.sub}}</h5>
+  <div class="user-circle">{{user?.sub?.charAt(0)?.toLocaleUpperCase()}}</div>
+  <h5 class="text-center">{{user?.user_name}}</h5>
   <hr>
   <nav class="nav flex-column">
-    <a class="nav-link"  (click)="setActiveSection('proxima-cita')">Próxima Cita</a>
-    <a class="nav-link"  (click)="setActiveSection('historial')">Historial de Citas</a>
-    <a class="nav-link"  (click)="setActiveSection('agendar')">Agendar Nueva Cita</a>
-    <a class="nav-link"  (click)="setActiveSection('perfil')">Perfil del Usuario</a>
-    <a class="nav-link"  (click)="logout($event)">Log out</a>
+    <a class="nav-link"  (click)="setActiveSection('proxima-cita')">
+      <i class="bi bi-calendar-event me-2"></i>Proxima Cita</a>
+    <a class="nav-link"  (click)="setActiveSection('historial')">
+       <i class="bi bi-clock-history me-2"></i> Historial de Citas</a>
+    <a class="nav-link"  (click)="setActiveSection('agendar')">
+      <i class="bi bi-plus-circle me-2"></i>Agendar Nueva Cita</a>
+    <a class="nav-link"  (click)="setActiveSection('perfil')">
+      <i class="bi bi-person-circle me-2"></i>Perfil del Usuario</a>
+    <a class="nav-link"  (click)="logout($event)">
+      <i class="bi bi-box-arrow-right me-2"></i>Log out</a>
   </nav>
 </div>
 
 <div class="content">
-  <h2 class="mb-4">Panel de Usuario</h2>
+  
 
-  <!-- Próxima Cita -->
+  <!-- Pr�xima Cita -->
   @if(activeSection === 'proxima-cita') {
-  <div>
-    <div class="card shadow">
+    
+    <h2 class="title mb-4 m-2">Citas</h2>
+
+   <div clas>
+    <div class="card shadow m-2">
       <div class="card-header bg-primary text-white">
         Citas Pendientes 
       </div>
-      <div class="card-body">
-        <p><strong>Fecha:</strong> 10 de Agosto, 2025</p>
-        <p><strong>Hora:</strong> 3:00 PM</p>
-        <p><strong>Profesional:</strong> Dra. Ana Ramírez</p>
-        <p><strong>Ubicación:</strong> Clínica Central</p>
-        <p><strong>Ubicación:</strong> Clínica Central</p>
-        <button class="btn btn-warning btn-sm me-2">Reprogramar</button>
-        <button class="btn btn-danger btn-sm">Cancelar</button>
+      <div class="card-body m-2">
+        @for(quote of quotes; track quote.id) {
+         @if(quote.quote_state === 'Pendiente' && quote.usersId == user?.id){
+        <p><strong>Titulo:</strong> {{quote.title}}</p>
+        <p><strong>Descripcion:</strong> {{quote.quote_description}}</p>
+        <p><strong>Fecha:</strong> {{ quote.quote_date | date:'dd/MM/yyyy' }}</p>
+        <p><strong>Hora:</strong> {{ quote.quote_date | date:'HH:mm' }}</p>
+        <p><strong>Estado:</strong> {{quote.quote_state}}</p>
+        <button class="btn btn-danger btn-sm" (click)="DeleteQuote(quote.id)">Borrar Cita</button>
+        <button class="btn btn-warning btn-sm"
+        (click)="EditQuote(quote)"data-bs-toggle="modal"data-bs-target="#QuotesModal">Editar</button>
+        <hr>
+          }
+        }
       </div>
     </div>
-  </div>
-   
+   </div>
+  
    <div>
-    <div class="card shadow">
-      <div class="card-header bg-primary text-white">
-        Citas Confirmadas
+    <div class="card shadow m-2">
+      <div class="card-header bg-success text-white">
+        Citas Confirmadas 
       </div>
-      <div class="card-body">
-        <p><strong>Fecha:</strong> 10 de Agosto, 2025</p>
-        <p><strong>Hora:</strong> 3:00 PM</p>
-        <p><strong>Servicio:</strong> Dra. Ana Ramírez</p>
-        <p><strong>Estado:</strong> Clínica Central</p>
-        <p><strong>Descripcion:</strong> Clínica Central</p>
-        <button class="btn btn-warning btn-sm me-2">Reprogramar</button>
-        <button class="btn btn-danger btn-sm">Cancelar</button>
+      <div class="card-body  m-2">
+        @for(quote of quotes; track quote.id) {
+         @if(quote.quote_state === 'Confirmado' && quote.usersId == user?.id){
+        <p><strong>Titulo:</strong> {{quote.title}}</p>
+        <p><strong>Descripcion:</strong> {{quote.quote_description}}</p>
+        <p><strong>Fecha:</strong> {{ quote.quote_date | date:'dd/MM/yyyy' }}</p>
+        <p><strong>Hora:</strong> {{ quote.quote_date | date:'HH:mm' }}</p>
+        <p><strong>Desripcion:</strong> {{quote.quote_state}}</p>
+        <button class="btn btn-danger btn-sm" (click)="DeleteQuote(quote.id)">Borrar Cita</button>
+        <button class="btn btn-warning btn-sm"
+        (click)="EditQuote(quote)"data-bs-toggle="modal"data-bs-target="#QuotesModal">Editar</button>
+        <hr>
+          }
+        }
       </div>
     </div>
-  </div>
+   </div>
+
+    <div>
+    <div class="card shadow m-2">
+      <div class="card-header bg-danger text-white">
+        Citas Canceladas 
+      </div>
+      <div class="card-body  m-2">
+        @for(quote of quotes; track quote.id) {
+         @if(quote.quote_state === 'Cancelada' && quote.usersId == user?.id){
+        <p><strong>Titulo:</strong> {{quote.title}}</p>
+        <p><strong>Descripcion:</strong> {{quote.quote_description}}</p>
+        <p><strong>Fecha:</strong> {{ quote.quote_date | date:'dd/MM/yyyy' }}</p>
+        <p><strong>Hora:</strong> {{ quote.quote_date | date:'HH:mm' }}</p>
+        <p><strong>Desripcion:</strong> {{quote.quote_state}}</p>
+        <button class="btn btn-danger btn-sm" (click)="DeleteQuote(quote.id)">Borrar Cita</button>
+        <button class="btn btn-warning btn-sm"
+        (click)="EditQuote(quote)"data-bs-toggle="modal"data-bs-target="#QuotesModal">Editar</button>
+        <hr>
+          }
+        }
+      </div>
+    </div>
+   </div>
+
+
   }
   <!-- Historial -->
   @if(activeSection === 'historial') {
-  <div >
-    <div class="card shadow">
-      <div class="card-header bg-secondary text-white">
-        Historial de Citas
-      </div>
-      <div class="card-body">
-        <ul class="list-group">
+  <div>
+    <h2 class="title mb-4 ">Historial de Citas</h2>
+  <div class="card shadow">
+    <div class="card-header bg-secondary text-white">
+      Historial de Citas
+    </div>
+    <div class="card-body">
+      <ul class="list-group">
+        @for(quote of quotes; track quote.id) {
+         @if(quote.usersId == user?.id){
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            5 Ago 2025 - Atendida
-            <span class="badge bg-success">✔️</span>
+            <div>
+              <h6 class="mb-1">
+                <i class="bi bi-calendar-check me-2"></i> <!-- icono de cita -->
+                {{ quote.title }}
+              </h6>
+              <small class="text-muted">
+                <i class="bi bi-clock me-1"></i> {{ quote.quote_date }}
+              </small>
+            </div>
+            <span class="badge" 
+                  [ngClass]="{
+                    'bg-success': quote.quote_state === 'Completada',
+                    'bg-warning text-dark': quote.quote_state === 'Pendiente',
+                    'bg-danger': quote.quote_state === 'Cancelada'
+                  }">
+              <i class="bi" 
+                 [ngClass]="{
+                   'bi-check-circle': quote.quote_state === 'Completada',
+                   'bi-exclamation-circle': quote.quote_state === 'Pendiente',
+                   'bi-x-circle': quote.quote_state === 'Cancelada'
+                 }"></i>
+              {{ quote.quote_state }}
+            </span>
           </li>
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            25 Jul 2025 - Cancelada
-            <span class="badge bg-danger">✖️</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            10 Jul 2025 - Atendida
-            <span class="badge bg-success">✔️</span>
-          </li>
-        </ul>
-      </div>
+         }
+        }
+      </ul>
     </div>
   </div>
+</div>
   }
   <!-- Agendar -->
    @if(activeSection === 'agendar') {
-  <div >
+  <div class="form-container">
+    <h2 class="title mb-4">Nueva Cita</h2>
     <div class="card shadow">
       <div class="card-header bg-success text-white">
         Agendar Nueva Cita
       </div>
       <div class="card-body">
-        <form>
+        <form [formGroup]="newQuote" (ngSubmit)="saveQuote()">
+         <div class="mb-3">
+           <label for="title" class="form-label">Titulo</label>
+            <input
+            type="text"
+            class="form-control"
+            id="title"
+            formControlName="title"
+            placeholder="titulo"
+             />
+         </div>
+
           <div class="mb-3">
-            <label for="servicio" class="form-label">Servicio</label>
-            <select class="form-select" id="servicio">
+            <label for="quote_description" class="form-label">Descricion</label>
+             <input
+             type="text"
+             class="form-control"
+             id="quote_description"
+             formControlName="quote_description"
+             placeholder="descripcion"
+             />
+          </div>
+
+
+         <div class="mb-3">
+           <label for="quote_date" class="form-label">Fecha</label>
+            <input
+            type="date"
+            class="form-control"
+            id="quote_date"
+            formControlName="quote_date"
+            />
+         </div>
+
+         <div class="mb-3">
+            <label for="quote_hora" class="form-label">Hora</label>
+             <input
+             type="time"
+             class="form-control"
+             id="quote_hora"
+             formControlName="quote_hora"
+          
+             />
+          </div>
+
+         
+         <div class="mb-3">
+           <label for="serviciosId" class="form-label">Servicio</label>
+            <select class="form-select" id="serviciosId" formControlName="serviciosId">
               <option value="" disabled selected>Seleccione un servicio</option>
-              <option *ngFor="let servicio of servicio" [value]="servicio.id">{{servicio.service_names}}</option>
-              
-              
+                @for (serv of servicio; track serv.id) {
+              <option [value]="serv.id">
+                  {{ serv.service_names }}
+              </option>
+              }
             </select>
           </div>
-            <div class="mb-3">
-            <label for="fecha" class="form-label">Descripcion</label>
-            <input type="text" class="form-control" id="fecha">
-          </div>
-          <div class="mb-3">
-            <label for="fecha" class="form-label">Fecha</label>
-            <input type="date" class="form-control" id="fecha">
-          </div>
-          <div class="mb-3">
-            <label for="hora" class="form-label">Hora</label>
-            <input type="time" class="form-control" id="hora">
-          </div>
-          <button type="submit" class="btn btn-primary">Agendar Cita</button>
+
+          <button type="submit" class="btn btn-success" [disabled]="newQuote.invalid">Agendar Cita</button>
         </form>
       </div>
     </div>
@@ -114,30 +214,151 @@
   }
   <!-- Perfil -->
   @if(activeSection === 'perfil') {
-  <div >
-    <div class="card shadow">
-      <div class="card-header bg-info text-white">
-        Perfil del Usuario
-      </div>
-      <div class="card-body">
-        <form>
-          <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre</label>
-            <input type="text" class="form-control" id="nombre" value="Victor Núñez">
-          </div>
-          <div class="mb-3">
-            <label for="email" class="form-label">Correo Electrónico</label>
-            <input type="email" class="form-control" id="email" value="victor@email.com">
-          </div>
-          <div class="mb-3">
-            <label for="telefono" class="form-label">Teléfono</label>
-            <input type="tel" class="form-control" id="telefono" value="8888-8888">
-          </div>
-          <button type="submit" class="btn btn-outline-primary">Actualizar Perfil</button>
-        </form>
-      </div>
+  <div class="d-flex justify-content-center align-items-center vh-150">
+  <div class="card shadow-lg p-4" style="width: 100rem; border-radius: 50px;">
+    <div class="card-body text-center">
+      <!-- Imagen de perfil -->
+      <img src="data:image/jpeg;base64,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"
+           class="rounded-circle mb-4 shadow-sm"
+           alt="Foto de perfil">
+
+      <!-- Nombre -->
+      <h3 class="card-title mb-3">
+        <i class="bi bi-person-circle me-2"></i> {{ user?.user_name }}
+      </h3>
+      <!-- Rol o puesto -->
+
+      <p class="text-muted mb-3">{{user?.role}}</p>
+      <!-- Email -->
+      <p class="mb-4"><i class="bi bi-envelope-fill"></i> {{user?.sub}}</p>
+
+      <!-- Botón Editar -->
+      <button class="btn btn-secondary btn-lg px-4"(click)="EditUser(user?.id, user) "data-bs-toggle="modal"data-bs-target="#perfilModal" >
+        <i class="bi bi-pencil-square"></i> Editar perfil
+      </button>
     </div>
   </div>
+</div>
+}
 
-  }
+         <!-- Modal por cada cita -->
+  <div class="modal fade" id="QuotesModal" tabindex="-1" aria-labelledby="quotesModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+  <div class="modal-content">
+
+      
+      <form (ngSubmit)="UpdateQuote()" #NewQuote="ngForm">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="quotesModalLabel">Editar Cita</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Título</label>
+            <input type="text" class="form-control"
+                   [(ngModel)]="UpQuote.title"
+                   name="title"
+                   required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea class="form-control"
+                      [(ngModel)]="UpQuote.quote_description"
+                      name="quote_description"
+                      rows="3"
+                      required></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Fecha</label>
+            <input type="date" class="form-control"
+                   [(ngModel)]="UpQuote.quote_date"
+                   name="quote_date"
+                   required>
+          </div>
+
+           <div class="mb-3">
+            <label class="form-label">Hora</label>
+            <input type="time" class="form-control"
+                   [(ngModel)]="UpQuote.quote_hora"
+                   name="quote_hora"
+                   required>
+          </div>
+
+
+              <div class="mb-3">
+               <label class="form-label">Servicio</label>
+                <select class="form-select"
+                  [(ngModel)]="UpQuote.serviciosId"
+                  name="serviciosId"
+                  required>
+                  <option value="" disabled>Seleccione un servicio</option>
+                  <option *ngFor="let serv of servicio" [value]="serv.id">
+                  {{ serv.service_names }}
+                  </option>
+                </select>
+              </div>
+      </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Guardar Tarea</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+        
+
+    <!--Modal Para actulizar el perfil-->
+
+     <div class="modal fade" id="perfilModal" tabindex="-1" aria-labelledby="perfilModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+  <div class="modal-content">
+
+      
+      <form (ngSubmit)="UpdateUser()" #NewQuote="ngForm">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="perfilModalLabel">Actulizar Perfil</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">User Name</label>
+            <input type="text" class="form-control"
+                   [(ngModel)]="upUser.user_name"
+                   name="user_name"
+                   required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input class="form-control"
+                      [(ngModel)]="upUser.email"
+                      name="email"
+                      rows="3"
+                      required> 
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Guardar Tarea</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+
   <!-- Fin del contenido -->
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">

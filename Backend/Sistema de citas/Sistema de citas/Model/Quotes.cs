@@ -12,7 +12,6 @@ namespace Sistema_de_citas.Model
         public string quote_state { get; set; }
         public int UsersId { get; set; }
         public int ServiciosId { get; set; }
-        public Users Users { get; set; }
-        public Servicios Servicios { get; set; }
+        
     }
 }

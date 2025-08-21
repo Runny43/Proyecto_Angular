@@ -40,7 +40,6 @@ namespace Sistema_de_citas.Controllers
 
         // POST api/<ServiciosController>
         [HttpPost]
-        [Authorize(Roles = "admin")]
         public IActionResult Post([FromBody] Servicios servicios)
         {
             servicios.Id= 0;
@@ -51,10 +50,23 @@ namespace Sistema_de_citas.Controllers
 
         // PUT api/<ServiciosController>/5
         [HttpPut("{id}")]
-        public async void Put(int id, [FromBody] Servicios servicio)
+        public async Task<IActionResult> Put(int id, [FromBody] Servicios servicio)
         {
-            Servicios servicioBuscado = new Servicios();
-            servicioBuscado= await _context.Servicios.FindAsync(id);
+            var cambios = await _context.Servicios.FindAsync(id);
+
+            cambios.service_names = servicio.service_names;
+            cambios.service_description = servicio.service_description;
+            cambios.duration= servicio.duration;
+            cambios.price= servicio.price;
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(cambios);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al actualizar: {ex.Message}");
+            }
 
         }
 

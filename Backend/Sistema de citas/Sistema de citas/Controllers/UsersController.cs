@@ -41,12 +41,14 @@ namespace Sistema_de_citas.Controllers
         }
 
         // GET api/<UsersController>/5
-        [HttpGet("{id}")]
-        public IQueryable<Users> Get(int id)
+        [HttpGet("{email}")]
+        public IQueryable<Users> Get(string email)
         {
-            var userLista = from x in _context.Users where x.Id == id select x;
+            var userLista = from x in _context.Users where x.email == email select x;
             return userLista;
         }
+
+
 
         // POST api/<UsersController>
         [HttpPost]
@@ -92,8 +94,24 @@ namespace Sistema_de_citas.Controllers
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] Users users)
         {
+            var cambios = await _context.Users.FindAsync(id);
+
+            cambios.Id = users.Id;
+            cambios.user_name= users.user_name;
+            cambios.email= users.email;
+            cambios.password= users.password;
+            cambios.user_role= users.user_role;
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(cambios);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al actualizar: {ex.Message}");
+            }
         }
 
         // DELETE api/<UsersController>/5
