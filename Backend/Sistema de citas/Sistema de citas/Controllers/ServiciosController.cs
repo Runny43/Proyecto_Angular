@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Sistema_de_citas.DatabaseHelper;
 using Sistema_de_citas.Model;
 
+
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Sistema_de_citas.Controllers
@@ -30,10 +31,10 @@ namespace Sistema_de_citas.Controllers
         }
 
         // GET api/<ServiciosController>/5
-        [HttpGet("{id}")]
-        public IQueryable Get(int id)
+        [HttpGet("{name}")]
+        public IQueryable<Servicios> Get(string name)
         {
-            var resultado = from x in _context.Servicios where x.Id == id select x;
+            var resultado = from x in _context.Servicios where x.service_names == name select x;
 
             return resultado;
         }

@@ -47,6 +47,7 @@ export class DasboardAdmin {
     quoteData:any;
     serviciosData:any;
     userId:number=0;
+    usersList:any;
     
   ngOnInit() {
   const tokenData = this.authService.getUserData();
@@ -61,6 +62,13 @@ export class DasboardAdmin {
           this.userId = data.id;
         }
       );
+    this.userService.GetUsers()
+    .subscribe(
+      (data:any)=>{
+        console.log(data)
+        this.usersList= data;
+      }
+    )
 
     this.quotesService.getQuotes()
       .subscribe(
@@ -79,8 +87,15 @@ export class DasboardAdmin {
 }
   loggedUser: Users= new Users(0,'','','','');
   editUser(){
-    
-    
+    this.userService.GetUser(this.emailUsuario)
+      .subscribe(
+        (data: any) => {
+          console.log(data)
+          this.loggedUser.id = data.id;
+          this.loggedUser.password= data.password;
+          this.loggedUser.user_role=data.user_role;
+        }
+      );
     this.userService.putUser(this.loggedUser).subscribe({
       next:(res) => console.log('Usuario editado:', res),
       error: (err) => console.error('Error al editar usuario:', err)
@@ -99,9 +114,11 @@ export class DasboardAdmin {
   setActiveSection(section: string) {
     this.activeSection = section;
   }
-
+duracionValor: number = 0;
+duracionUnidad: string = 'minutos';
   servicios: Servicios = new Servicios(0, '', '', '', 0);
   crearServicio() {
+    this.servicios.duration=`${this.duracionValor} ${this.duracionUnidad}`;
     this.serviciosServices.postServicios(this.servicios)
     .subscribe({
       next:(res) => console.log('Servicio creado:', res),
@@ -112,7 +129,6 @@ export class DasboardAdmin {
 
   quotes: Quotes= new Quotes(0, '', '', '', '', 0, 0);
   crearCita() {
-  this.quotes.usersId = this.userId;
   this.quotes.quote_date = new Date(this.quotes.quote_date).toISOString();
 
   this.quotesService.postQuotes(this.quotes).subscribe({

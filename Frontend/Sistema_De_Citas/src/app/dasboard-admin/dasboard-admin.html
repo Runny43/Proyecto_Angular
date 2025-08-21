@@ -52,7 +52,7 @@
           </div>
           <div class="mb-3">
             <label for="fecha" class="form-label">Fecha:</label>
-            <input type="datetime" class="form-control" id="fecha" name="quote_date" [(ngModel)]="quotes.quote_date">
+            <input type="date" class="form-control" id="fecha" name="quote_date" [(ngModel)]="quotes.quote_date">
           </div>
           <div class="mb-3">
             <label for="estado" class="form-label">Estado:</label>
@@ -62,9 +62,18 @@
             </select>
           </div>
           <div class="mb-3">
-            <label for="idService" class="form-label">Id del servicio:</label>
-            <input type="number" class="form-control" id="idService" name="idService" [(ngModel)]="quotes.serviciosId">
+            <label for="user_name" class="form-label">Servicio a escoger:</label>
+            <select class="form-control" id="user_name" name="user_name" [(ngModel)]="quotes.usersId">
+              <option *ngFor="let u of usersList" [value]="u.id" >{{u.user_name}}</option>
+            </select>
           </div>
+          <div class="mb-3">
+            <label for="service_name" class="form-label">Servicio a escoger:</label>
+            <select class="form-control" id="service_name" name="service_name" [(ngModel)]="quotes.serviciosId">
+              <option *ngFor="let s of serviciosData" [value]="s.id" >{{s.service_names}}</option>
+            </select>
+          </div>
+          
           <button type="submit" class="btn btn-primary">Agendar cita</button>
         </form>
       </div>
@@ -109,9 +118,19 @@
             <label for="descripcion" class="form-label">Descripcion</label>
             <input type="text" class="form-control" id="descripcion" name="service_description" [(ngModel)]="servicios.service_description">
           </div>
-          <div class="mb-3">
-            <label for="hora" class="form-label">Duracion</label>
-            <input type="text" class="form-control" id="hora" name="duration" [(ngModel)]="servicios.duration">
+          <div class="mb-3 d-flex align-items-center">
+            <label for="hora" class="form-label me-2">Duración</label>
+            <input type="number" class="form-control me-2" id="hora" [(ngModel)]="duracionValor" name="duracionValor"
+               min="1">
+          
+            <select class="form-control" [(ngModel)]="duracionUnidad" name="duracionUnidad">
+              <option value="segundos">Segundos</option>
+              <option value="minutos">Minutos</option>
+              <option value="horas">Horas</option>
+              <option value="días">Días</option>
+              <option value="semanas">Semanas</option>
+              <option value="años">Años</option>
+            </select>
           </div>
           <div class="mb-3">
             <label for="hora" class="form-label">Precio</label>
@@ -145,12 +164,10 @@
             <input type="email" class="form-control" id="email" value="{{data.email}}" [(ngModel)]="loggedUser.email">
           </div>
           <div class="mb-3">
-            <label for="email" class="form-label">Contraseña:</label>
-            <input type="password" class="form-control" id="password" [value]="data.password" [(ngModel)]="loggedUser.password" readonly>
+            <label for="email" class="form-label">Contraseña: {{data.password}}</label>
           </div>
           <div class="mb-3">
-            <label for="email" class="form-label">Rol del usuario:</label>
-            <input type="text" class="form-control" id="role" [value]="data.user_role" [(ngModel)]="data.user_role" readonly>
+            <label for="email" class="form-label">Rol del usuario: {{data.user_role}}</label>
           </div>
           <button type="submit" class="btn btn-outline-primary">Actualizar Perfil</button>
           </form>

@@ -12,6 +12,9 @@ export class ServiciosServices {
   getServicios(){
     return this.http.get('https://localhost:7175/api/Servicios');
   }
+  searchServicio(name:any){
+    return this.http.get('https://localhost:7175/api/Servicios/'+name)
+  }
   deleteServicios(Id:any){
     return this.http.delete('https://localhost:7175/api/Servicios/'+Id)
   }

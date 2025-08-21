@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sistema_de_citas.DatabaseHelper;
 using Sistema_de_citas.Model;
+using System.Text;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -31,32 +32,13 @@ namespace Sistema_de_citas.Controllers
 
         // GET api/<QuotesController>/5
         [HttpGet("{id}")]
-        public IQueryable Get(int id)
+        public IQueryable<Quotes> Get(int id)
         {
             var quotesLista = from x in _context.Quotes where x.Id == id select x;
             return quotesLista;
         }
 
-        // GET api/<QuotesController>/5
-        [HttpGet("{Id}")]
-        public IQueryable<Quotes> GetQuotes(int Id)
-        {
-
-
-            //var quotesResult= from x in quotes
-            //            join u in userLista on x.UsersId equals u.Id
-            //            join s in services on x.ServiciosId equals s.Id
-            //            select (x.title, x.quote_description, x.quote_date, s.service_names, u.user_name);
-            //return quotesResult;
-            var quotesResult = from x in _context.Quotes
-                               where x.Id == Id
-                               select x;
-                               
-            return quotesResult;
-
-            //SELECT q.Id, q.title, q.quote_description, q.quote_date, q.quote_state, q.UsersId, u.user_name, u.email FROM Quotes q INNER JOIN Users u ON(q.UsersId = u.Id);
-        }
-
+        
         // POST api/<QuotesController>
         [HttpPost]
         public IActionResult Post([FromBody] Quotes quotes)
