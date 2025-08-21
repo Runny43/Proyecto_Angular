@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Users } from '../models/Users';
 
-interface User {
+ export interface User {
   user_name: string;
   email: string;
   password: string;
@@ -50,4 +50,11 @@ export class UserService {
   getEmail(): string {
     return this.email;
   }
+
+  updateUser(id: any, user : any ) {
+    return this.http.put(`${this.urlApi}/UpdateUser/${id}`, user)
+  }
+
+  
+
 }

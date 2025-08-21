@@ -60,7 +60,7 @@ namespace Sistema_de_citas.Controllers
                 return BadRequest(new { msg = "Todos los campos son obligatorios" });
             }
 
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -68,7 +68,7 @@ namespace Sistema_de_citas.Controllers
             var user = new Users
             {
                 email = dto.email,
-                password = dto.password, 
+                password = dto.password,
                 user_name = dto.user_name,
                 user_role = dto.user_role
             };
@@ -85,10 +85,10 @@ namespace Sistema_de_citas.Controllers
             var usuario = await _context.Users.FirstOrDefaultAsync(u => u.email == dto.email && u.password == dto.password);
 
             if (usuario == null)
-                 return Unauthorized(new{ msg = "Credenciales invalidas" });
+                return Unauthorized(new { msg = "Credenciales invalidas" });
 
-            var token = GenerarToken(dto.email, usuario.user_role);
-            return Ok(new { token});
+            var token = GenerarToken(dto.email, usuario.user_role, usuario.Id, usuario.user_name);
+            return Ok(new { token });
         }
 
 
@@ -99,10 +99,10 @@ namespace Sistema_de_citas.Controllers
             var cambios = await _context.Users.FindAsync(id);
 
             cambios.Id = users.Id;
-            cambios.user_name= users.user_name;
-            cambios.email= users.email;
-            cambios.password= users.password;
-            cambios.user_role= users.user_role;
+            cambios.user_name = users.user_name;
+            cambios.email = users.email;
+            cambios.password = users.password;
+            cambios.user_role = users.user_role;
             try
             {
                 await _context.SaveChangesAsync();
@@ -123,7 +123,7 @@ namespace Sistema_de_citas.Controllers
             var value = userLista.ExecuteDelete();
         }
 
-        private string GenerarToken(string email, string user_role)
+        private string GenerarToken(string email, string user_role, int id, string user_name)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
@@ -133,6 +133,8 @@ namespace Sistema_de_citas.Controllers
             {
             new Claim(JwtRegisteredClaimNames.Sub, email),
             new Claim("role", user_role),
+            new Claim("id",Convert.ToString(id)),
+            new Claim("user_name", user_name),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
@@ -146,6 +148,27 @@ namespace Sistema_de_citas.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
 
+
+        }
+
+        [HttpPut("UpdateUser/{id}")]
+
+        public async Task<IActionResult> UpdateUser(int id, UpUserDto dto)
+        {
+            var existingUser = await _context.Users.FindAsync(id);
+
+            if (existingUser == null)  // Si NO existe el usuario
+            {
+                return NotFound(new { msg = "Usuario no encontrado" });
+            }
+
+            // Actualiza campos
+            existingUser.email = dto.email;
+            existingUser.user_name = dto.user_name;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { msg = "Usuario actualizado correctamente" });
 
         }
     }

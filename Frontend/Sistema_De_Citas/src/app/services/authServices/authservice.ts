@@ -4,6 +4,8 @@ export interface TokenPayload {
   sub: string;
   role: string;
   exp: number;
+  user_name: string;
+  id: number;
 }
 
 @Injectable({
